@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="entry.cpp" />
+    <ClCompile Include="sdk.cpp">
+      <Filter>valorant</Filter>
+    </ClCompile>
+    <ClCompile Include="vmthook.cpp">
+      <Filter>hook</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="valorant">
+      <UniqueIdentifier>{51551544-a849-45cc-812a-149628c0454a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hook">
+      <UniqueIdentifier>{dcf8a9ef-8a80-4975-95bc-1073a0614ce4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="defines.hpp">
+      <Filter>valorant</Filter>
+    </ClInclude>
+    <ClInclude Include="valorant.hpp">
+      <Filter>valorant</Filter>
+    </ClInclude>
+    <ClInclude Include="structs.hpp">
+      <Filter>valorant</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk.hpp">
+      <Filter>valorant</Filter>
+    </ClInclude>
+    <ClInclude Include="vmthook.h">
+      <Filter>hook</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
