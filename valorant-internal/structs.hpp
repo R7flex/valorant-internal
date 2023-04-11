@@ -17,11 +17,6 @@ namespace valorant {
 				std::uint8_t details[20];
 			};
 
-			class fmatrix {
-			public:
-				double m[4][4];
-			};
-
 			class ftextdata {
 			public:
 				char pad_0[0x30];
@@ -84,84 +79,139 @@ namespace valorant {
 				double roll = 0.f;
 			};
 
-			class fvector2d {
-			public:
-				fvector2d() : x(0.f), y(0.f) {}
-				fvector2d(double x, double y) : x(x), y(y) {}
+			struct fvector2d
+			{
+				float x, y;
 
-				fvector2d operator + (const fvector2d& other) const { return { this->x + other.x, this->y + other.y }; }
-				fvector2d operator - (const fvector2d& other) const { return { this->x - other.x, this->y - other.y }; }
-				fvector2d operator * (double scalar) const { return { this->x * scalar, this->y * scalar }; }
-				fvector2d operator / (double divide) const { return { this->x / divide, this->y / divide }; }
+				fvector2d() : x(0), y(0) {}
 
-				fvector2d& operator *= (const double other) { this->x *= other; this->y *= other; return *this; }
-				fvector2d& operator /= (const double other) { this->x /= other; this->y /= other; return *this; }
+				fvector2d(float x, float y) : x(x), y(y) {}
 
-				fvector2d& operator =  (const fvector2d& other) { this->x = other.x; this->y = other.y; return *this; }
-				fvector2d& operator += (const fvector2d& other) { this->x += other.x; this->y += other.y; return *this; }
-				fvector2d& operator -= (const fvector2d& other) { this->x -= other.x; this->y -= other.y; return *this; }
-				fvector2d& operator *= (const fvector2d& other) { this->x *= other.x; this->y *= other.y; return *this; }
-				fvector2d& operator /= (const fvector2d& other) { this->x /= other.x; this->y /= other.y; return *this; }
+				fvector2d operator + (const fvector2d& other) const { return fvector2d(x + other.x, y + other.y); }
 
-				operator bool()
+				fvector2d operator- (const fvector2d& other) const { return fvector2d(x - other.x, y - other.y); }
+
+				fvector2d operator* (float scalar) const { return fvector2d(x * scalar, y * scalar); }
+
+				fvector2d& operator=  (const fvector2d& other) { x = other.x; y = other.y; return *this; }
+
+				fvector2d& operator+= (const fvector2d& other) { x += other.x; y += other.y; return *this; }
+
+				fvector2d& operator-= (const fvector2d& other) { x -= other.x; y -= other.y; return *this; }
+
+				fvector2d& operator*= (const float other) { x *= other; y *= other; return *this; }
+
+				friend bool operator==(const fvector2d& one, const fvector2d& two) { return one.x == two.x && one.y == two.y; }
+
+				friend bool operator!=(const fvector2d& one, const fvector2d& two) { return !(one == two); }
+
+				friend bool operator>(const fvector2d& one, const fvector2d& two) { return one.x > two.x && one.y > two.y; }
+
+				friend bool operator<(const fvector2d& one, const fvector2d& two) { return one.x < two.x&& one.y < two.y; }
+
+				bool is_valid()
 				{
-					return bool(this->x && this->y);
+					if (x == 0 || y == 0)
+						return false;
+					else
+						return true;
 				}
 
-				friend bool operator==(const fvector2d& first, const fvector2d& second)
-				{
-					return first.x == second.x && first.y == second.y;
-				}
-
-				friend bool operator!=(const fvector2d& first, const fvector2d& second)
-				{
-					return !(first == second);
-				}
-
-			public:
-				double x = 0.f;
-				double y = 0.f;
 			};
 
-			class fvector {
-			public:
+			struct fvector
+			{
+				float x, y, z;
+
 				fvector() : x(0.f), y(0.f), z(0.f) {}
-				fvector(double x, double y, double z) : x(x), y(y), z(z) {}
-				fvector(const frotator& rotator) : x(rotator.pitch), y(rotator.yaw), z(rotator.roll) {}
 
-				fvector operator + (const fvector& other) const { return { this->x + other.x, this->y + other.y, this->z + other.z }; }
-				fvector operator - (const fvector& other) const { return { this->x - other.x, this->y - other.y, this->z - other.z }; }
-				fvector operator * (double scalar) const { return { this->x * scalar, this->y * scalar, this->z * scalar }; }
-				fvector operator / (double divide) const { return { this->x / divide, this->y / divide, this->z / divide }; }
+				fvector(float x, float y, float z) : x(x), y(y), z(z) {}
 
-				fvector& operator *= (const double other) { this->x *= other; this->y *= other; this->z *= other; return *this; }
-				fvector& operator /= (const double other) { this->x /= other; this->y /= other; this->z /= other; return *this; }
+				fvector(float InF) : x(InF), y(InF), z(InF) { }
 
-				fvector& operator =  (const fvector& other) { this->x = other.x; this->y = other.y; this->z = other.z; return *this; }
-				fvector& operator += (const fvector& other) { this->x += other.x; this->y += other.y; this->z += other.z; return *this; }
-				fvector& operator -= (const fvector& other) { this->x -= other.x; this->y -= other.y; this->z -= other.z; return *this; }
-				fvector& operator *= (const fvector& other) { this->x *= other.x; this->y *= other.y; this->z *= other.z; return *this; }
-				fvector& operator /= (const fvector& other) { this->x /= other.x; this->y /= other.y; this->z /= other.z; return *this; }
+				float Size() const { return sqrtf(x * x + y * y + z * z); }
 
-				operator bool()
-				{
-					return bool(this->x && this->y && this->z);
+				float Sum() const { return x + y + z; }
+
+				float Size2D() const { return sqrtf(x * x + y * y); }
+
+				float SizeSquared() const { return x * x + y * y + z * z; }
+
+				float DistTo(const fvector& V) const { return (*this - V).Size(); }
+
+				fvector operator+(const fvector& other) const { return fvector(x + other.x, y + other.y, z + other.z); }
+
+				fvector operator-(const fvector& other) const { return fvector(x - other.x, y - other.y, z - other.z); }
+
+				fvector operator*(const fvector& V) const { return fvector(x * V.x, y * V.y, z * V.z); }
+
+				fvector operator/(const fvector& V) const { return fvector(x / V.x, y / V.y, z / V.z); }
+
+				bool operator==(const fvector& V) const { return x == V.x && y == V.y && z == V.z; }
+
+				bool operator!=(const fvector& V) const { return x != V.x || y != V.y || z != V.z; }
+
+				fvector operator-() const { return fvector(-x, -y, -z); }
+
+				fvector operator+(float Bias) const { return fvector(x + Bias, y + Bias, z + Bias); }
+
+				fvector operator-(float Bias) const { return fvector(x - Bias, y - Bias, z - Bias); }
+
+				fvector operator*(float Scale) const { return fvector(x * Scale, y * Scale, z * Scale); } 
+
+				fvector operator/(float Scale) const { const float RScale = 1.f / Scale; return fvector(x * RScale, y * RScale, z * RScale); }
+
+				fvector operator=(const fvector& V) { x = V.x; y = V.y; z = V.z; return *this; }
+
+				fvector operator+=(const fvector& V) { x += V.x; y += V.y; z += V.z; return *this; }
+
+				fvector operator-=(const fvector& V) { x -= V.x; y -= V.y; z -= V.z; return *this; }
+
+				fvector operator*=(const fvector& V) { x *= V.x; y *= V.y; z *= V.z; return *this; }
+
+				fvector operator/=(const fvector& V) { x /= V.x; y /= V.y; z /= V.z; return *this; }
+
+				fvector operator*=(float Scale) { x *= Scale; y *= Scale; z *= Scale; return *this; }
+
+				fvector operator/=(float V) { const float RV = 1.f / V; x *= RV; y *= RV; z *= RV; return *this; }
+
+				float operator|(const fvector& V) const { return x * V.x + y * V.y + z * V.z; }
+
+				fvector operator^(const fvector& V) const { return fvector(y * V.z - z * V.y, z * V.x - x * V.z, x * V.y - y * V.x); }
+
+				inline float Distance(fvector v) {
+					return float(sqrtf(powf(v.x - x, 2.0) + powf(v.y - y, 2.0) + powf(v.z - z, 2.0)));
 				}
 
-				friend bool operator==(const fvector& first, const fvector& second)
+				bool is_valid()
 				{
-					return first.x == second.x && first.y == second.y && first.z == second.z;
+					if (x == 0 || y == 0)
+						return false;
+					else
+						return true;
 				}
 
-				friend bool operator!=(const fvector& first, const fvector& second)
-				{
-					return !(first == second);
-				}
+				static const fvector ZeroVector;
 
-			public:
-				double x = 0;
-				double y = 0;
-				double z = 0;
+				static const fvector OneVector;
+			};
+			struct alignas(16) FPlane : public fvector {
+				float W;
+			};
+			enum class EAresAlliance : uint8_t {
+				Alliance_Ally = 0,
+				Alliance_Enemy = 1,
+				Alliance_Neutral = 2,
+				Alliance_Any = 3,
+				Alliance_Count = 4,
+				Alliance_MAX = 5
+			};
+
+			struct fmatrix {
+				struct FPlane XPlane;
+				struct FPlane YPlane;
+				struct FPlane ZPlane;
+				struct FPlane WPlane;
 			};
 
 			struct flinearcolor

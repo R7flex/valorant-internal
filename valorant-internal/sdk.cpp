@@ -1,4 +1,5 @@
 #include "sdk.hpp"
+#include "spoofcall.h"
 
 using namespace valorant::sdk;
 
@@ -171,4 +172,60 @@ void ucanvas::k2_drawline(structs::fvector2d screenpos_a, structs::fvector2d scr
 	params.color = color;
 
 	this->process_event(function, &params);
+}
+
+structs::fvector uskeletalmeshcomponent::get_bone_location(int index)
+{
+	sdk::structs::fmatrix Matrix;
+	reinterpret_cast<sdk::structs::fmatrix* (__fastcall*)(uskeletalmeshcomponent*, sdk::structs::fmatrix*, int)>(valorant::image_base + offsets::bone_matrix)(this, &Matrix, index); // E8 ?? ?? ?? ?? 48 8B 47 30 F3 0F 10 45 ??
+	return { Matrix.WPlane.x, Matrix.WPlane.y, Matrix.WPlane.z };
+}
+
+bool ashootercharacter::is_alive()
+{
+	uobject* function = uobject::find_object<uobject*>(L"ShooterGame.ShooterCharacter.IsAlive");
+	if (!function)
+		return false;
+
+	struct
+	{
+		bool output;
+	} params;
+
+	this->process_event(function, &params);
+
+	return params.output;
+}
+
+float ashootercharacter::health()
+{
+	uobject* function = uobject::find_object<uobject*>(L"ShooterGame.ShooterCharacter.GetHealth");
+	if (!function)
+		return false;
+
+	struct
+	{
+		float output;
+	} params;
+
+	this->process_event(function, &params);
+
+	return params.output;
+}
+
+structs::fstring system::get_object_name(uobject* object)
+{
+	uobject* function = uobject::find_object<uobject*>(L"Engine.KismetSystemLibrary.GetObjectName");
+	if (!function)
+		return structs::fstring();
+
+	struct
+	{
+		uobject* object;
+		structs::fstring output;
+	} params;
+
+	variables::kismet_system->process_event(function, &params);
+
+	return params.output;
 }

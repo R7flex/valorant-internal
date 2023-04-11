@@ -28,12 +28,7 @@ namespace valorant
 		class uskeletalmeshcomponent : public uobject
 		{
 		public:
-			structs::fvector get_bone_location(std::int32_t index) {
-				structs::fmatrix out_matrix = { };
-				reinterpret_cast<structs::fmatrix* (*)(uskeletalmeshcomponent*, structs::fmatrix*, std::int32_t)>(valorant::image_base + offsets::bone_matrix)(this, &out_matrix, index);
-
-				return structs::fvector(out_matrix.m[3][0], out_matrix.m[3][1], out_matrix.m[3][2]);
-			}
+			structs::fvector get_bone_location(int index);
 		};
 
 		class aplayercameramanager : public uobject
@@ -55,6 +50,8 @@ namespace valorant
 		{
 		public:
 			uskeletalmeshcomponent* get_mesh();
+			bool is_alive();
+			float health();
 		};
 
 		class aplayercontroller : public uobject
@@ -103,6 +100,12 @@ namespace valorant
 			static structs::tarray<ashootercharacter*> find_all_shooters_with_alliance(uworld* context, ashootercharacter* viewer, structs::earesalliance alliance, bool only_player, bool only_alive);
 		};
 
+		class system
+		{
+		public:
+			static structs::fstring get_object_name(uobject* object);
+		};
+
 	}
 }
 
@@ -110,4 +113,5 @@ namespace variables
 {
 	inline valorant::sdk::uobject* blueprints;
 	inline valorant::sdk::uobject* gameplay_statics;
+	inline valorant::sdk::uobject* kismet_system;
 }

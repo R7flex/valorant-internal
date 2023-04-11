@@ -10,41 +10,35 @@ namespace valorant
 
 	void draw_transition_hook(sdk::ugameviewportclient* viewportclient, sdk::ucanvas* canvas)
 	{
-		if (!viewportclient) 
+		if (!canvas)
 			return draw_transition_hook(viewportclient, canvas);
 
-		do
+		sdk::uworld* world = reinterpret_cast<sdk::uworld*>(viewportclient->get_world());
+
+		sdk::aplayercontroller* controller = sdk::blueprints::get_player_controller(world);
+
+		sdk::ashootercharacter* character = controller->get_shooter_character();
+
+		sdk::aplayercameramanager* camera = controller->get_camera_manager();
+
+		if (camera != nullptr)
 		{
-
-			sdk::uworld* world = reinterpret_cast<sdk::uworld*>(viewportclient->get_world());
-			if (!world) continue;
-
-			sdk::aplayercontroller* controller = sdk::blueprints::get_player_controller(world);
-			if (!world) continue;
-
-			sdk::ashootercharacter* character = controller->get_shooter_character();
-			if (!character) continue;
-
-			sdk::aplayercameramanager* camera = controller->get_camera_manager();
-			if (!camera) continue;
-
 			sdk::structs::tarray<sdk::ashootercharacter*> actors = sdk::blueprints::find_all_shooters_with_alliance(world, character, sdk::structs::earesalliance::any, false, true);
 			for (int idx = 0; idx < actors.count; idx++)
 			{
 				sdk::ashootercharacter* actor = actors[idx];
-				if (!actor) continue;
+				if (!actor) continue; if (actor == character) continue;
 				sdk::uskeletalmeshcomponent* mesh = actor->get_mesh();
 				if (!mesh) continue;
 
+				sdk::structs::fvector head_location = mesh->get_bone_location(0);
+				if (!head_location.is_valid()) continue;
+				sdk::structs::fvector2d head_location_2d = controller->project_world_to_screen(head_location);
+				if (!head_location_2d.is_valid()) continue;
 
-				sdk::structs::fvector head_3d = mesh->get_bone_location(8);
-				sdk::structs::fvector2d head_2d = controller->project_world_to_screen(head_3d);
-
-				canvas->k2_drawline({head_2d.x, head_2d.y}, { 1920 / 2, 1080 / 2 }, 1, { 1,1,1,1 });
+				canvas->k2_drawline(head_location_2d, { 1920 / 2, 1080 }, 1, { 1,1,1,1 });
 			}
-
-
-		} while (false);
+		}
 
 		return draw_transition_o(viewportclient, canvas);
 	}
@@ -57,6 +51,7 @@ namespace valorant
 
 			variables::blueprints = sdk::uobject::find_object<sdk::uobject*>(L"ShooterGame.Default__ShooterBlueprintLibrary");
 			variables::gameplay_statics = sdk::uobject::find_object<sdk::uobject*>(L"Engine.Default__GameplayStatics");
+			variables::kismet_system = sdk::uobject::find_object<sdk::uobject*>(L"Engine.Default__KismetSystemLibrary");
 
 			sdk::uworld* world = 0;
 			const wchar_t* uworld_names[] = {

@@ -33,5 +33,9 @@
     <ClInclude Include="vmthook.h">
       <Filter>hook</Filter>
     </ClInclude>
+    <ClInclude Include="spoofcall.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="spoofcall.asm" />
   </ItemGroup>
 </Project>
