@@ -67,6 +67,7 @@ namespace valorant
 		{
 		public:
 			uobject* get_world();
+			uobject* get_gameinstance();
 		};
 
 		class ulocalplayer : public uobject
@@ -75,9 +76,16 @@ namespace valorant
 			ugameviewportclient* viewportclient();
 		};
 		
+		class uengine : public uobject
+		{
+		public:
+			uobject* get_font();
+		};
+
 		class ugameinstance : public uobject
 		{
 		public:
+			uengine* get_uengine();
 			structs::tarray<ulocalplayer*> localplayers();
 		};
 
@@ -91,6 +99,7 @@ namespace valorant
 		{
 		public:
 			void k2_drawline(structs::fvector2d screenpos_a, structs::fvector2d screenpos_b, float thickness, structs::flinearcolor color);
+			void k2_drawtext(uobject* font, structs::fstring text, structs::fvector2d screenposition, structs::fvector2d scale, structs::flinearcolor color, float kerning, structs::flinearcolor shadowcolor, structs::fvector2d shadowoffset, bool centrex, bool centrey, bool outline, structs::flinearcolor outlinecolor);
 		};
 
 		class blueprints
@@ -104,6 +113,7 @@ namespace valorant
 		{
 		public:
 			static structs::fstring get_object_name(uobject* object);
+			static uobject* get_outer_object(uobject* object);
 		};
 
 	}

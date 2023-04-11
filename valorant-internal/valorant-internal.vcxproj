@@ -20,16 +20,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="entry.cpp" />
+    <ClCompile Include="menu.cpp" />
     <ClCompile Include="sdk.cpp" />
-    <ClCompile Include="vmthook.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.hpp" />
     <ClInclude Include="sdk.hpp" />
+    <ClInclude Include="skcrypt.h" />
     <ClInclude Include="spoofcall.h" />
     <ClInclude Include="structs.hpp" />
     <ClInclude Include="valorant.hpp" />
     <ClInclude Include="vmthook.h" />
+    <ClInclude Include="zerogui.h" />
+    <ClInclude Include="zeroinput.h" />
   </ItemGroup>
   <ItemGroup>
     <MASM Include="spoofcall.asm">
@@ -158,7 +161,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;VALORANTINTERNAL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>

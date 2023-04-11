@@ -5,22 +5,22 @@ using namespace valorant::sdk;
 
 ugameinstance* uworld::gameinstance()
 {
-	return *reinterpret_cast<ugameinstance**>(this + offsets::game_instance);
+	return memory::read<ugameinstance*>(std::uintptr_t(std::uintptr_t(this)) + offsets::game_instance);
 }
 
 structs::tarray<ulocalplayer*> ugameinstance::localplayers()
 {
-	return *reinterpret_cast<structs::tarray<ulocalplayer*> *>(this + offsets::local_players);
+	return memory::read<structs::tarray<ulocalplayer*>>(std::uintptr_t(std::uintptr_t(this)) + offsets::local_players);
 }
 
 ugameviewportclient* ulocalplayer::viewportclient()
 {
-	return *reinterpret_cast<ugameviewportclient**>(this + offsets::viewportclient);
+	return memory::read<ugameviewportclient*>(std::uintptr_t(this) + offsets::viewportclient);
 }
 
 uobject* ugameviewportclient::get_world()
 {
-	return *reinterpret_cast<uobject**>(this + offsets::world);
+	return memory::read<uobject*>(std::uintptr_t(this) + offsets::world);
 }
 
 aplayercontroller* blueprints::get_player_controller(uworld* context)
@@ -225,7 +225,79 @@ structs::fstring system::get_object_name(uobject* object)
 		structs::fstring output;
 	} params;
 
+	params.object = object;
+
 	variables::kismet_system->process_event(function, &params);
 
 	return params.output;
+}
+
+void ucanvas::k2_drawtext(uobject* font, structs::fstring text, structs::fvector2d screenposition, structs::fvector2d scale, structs::flinearcolor color, float kerning, structs::flinearcolor shadowcolor, structs::fvector2d shadowoffset, bool centrex, bool centrey, bool outline, structs::flinearcolor outlinecolor)
+{
+	uobject* function = uobject::find_object<uobject*>(L"Engine.Canvas.K2_DrawText");
+	if (!function)
+		return;
+
+	struct
+	{
+		uobject* font;
+		structs::fstring text;
+		structs::fvector2d screenposition;
+		structs::fvector2d scale;
+		structs::flinearcolor color;
+		float kerning;
+		structs::flinearcolor shadowcolor;
+		structs::fvector2d shadowoffset;
+		bool centrex;
+		bool centrey;
+		bool outline;
+		structs::flinearcolor outlinecolor;
+	} params;
+
+	params.font = font;
+	params.text = text;
+	params.screenposition = screenposition;
+	params.scale = scale;
+	params.color = color;
+	params.kerning = kerning;
+	params.shadowcolor = shadowcolor;
+	params.shadowoffset = shadowoffset;
+	params.centrex = centrex;
+	params.centrey = centrey;
+	params.outline = outline;
+	params.outlinecolor = outlinecolor;
+
+	this->process_event(function, &params);
+}
+
+uobject* system::get_outer_object(uobject* object)
+{
+	uobject* function = uobject::find_object<uobject*>(L"Engine.KismetSystemLibrary.GetOuterObject");
+	if (!function)
+		return nullptr;
+
+	struct
+	{
+		uobject* object;
+		uobject* output;
+	} params;
+
+	variables::kismet_system->process_event(function, &params);
+
+	return params.output;
+}
+
+uobject* uengine::get_font()
+{
+	return memory::read<uobject*>(std::uintptr_t(this) + 0x88);
+}
+
+uobject* ugameviewportclient::get_gameinstance()
+{
+	return memory::read<uobject*>(std::uintptr_t(this) + 0x88);
+}
+
+uengine* ugameinstance::get_uengine()
+{
+	return memory::read<uengine*>(std::uintptr_t(this) + 0x28);
 }

@@ -3,6 +3,11 @@
 
 using namespace valorant;
 
+namespace menu
+{
+	void render_menu(sdk::uobject* font, sdk::ucanvas* canvas);
+}
+
 namespace valorant
 {
 	using draw_transition = void(*)(sdk::ugameviewportclient* viewportclient, sdk::ucanvas* canvas);
@@ -13,16 +18,31 @@ namespace valorant
 		if (!canvas)
 			return draw_transition_hook(viewportclient, canvas);
 
-		sdk::uworld* world = reinterpret_cast<sdk::uworld*>(viewportclient->get_world());
-
-		sdk::aplayercontroller* controller = sdk::blueprints::get_player_controller(world);
-
-		sdk::ashootercharacter* character = controller->get_shooter_character();
-
-		sdk::aplayercameramanager* camera = controller->get_camera_manager();
-
-		if (camera != nullptr)
+		do
 		{
+			sdk::uworld* world = reinterpret_cast<sdk::uworld*>( viewportclient->get_world() );
+			if (!world) continue;
+
+			sdk::ugameinstance* gameinstance = reinterpret_cast<sdk::ugameinstance*>( viewportclient->get_gameinstance() );
+			if (!gameinstance) continue;
+
+			sdk::uengine* uengine = gameinstance->get_uengine();
+			if (!uengine) continue;
+
+			sdk::aplayercontroller* controller = sdk::blueprints::get_player_controller(world);
+			if (!controller) continue;
+
+			sdk::ashootercharacter* character = controller->get_shooter_character();
+			if (!character) continue;
+
+			sdk::aplayercameramanager* camera = controller->get_camera_manager();
+			if (!camera) continue;
+
+			sdk::uobject* font = uengine->get_font();
+			if (!font) continue;
+
+			menu::render_menu(font, canvas);
+
 			sdk::structs::tarray<sdk::ashootercharacter*> actors = sdk::blueprints::find_all_shooters_with_alliance(world, character, sdk::structs::earesalliance::any, false, true);
 			for (int idx = 0; idx < actors.count; idx++)
 			{
@@ -31,14 +51,18 @@ namespace valorant
 				sdk::uskeletalmeshcomponent* mesh = actor->get_mesh();
 				if (!mesh) continue;
 
-				sdk::structs::fvector head_location = mesh->get_bone_location(0);
-				if (!head_location.is_valid()) continue;
+				sdk::structs::fvector head_location = mesh->get_bone_location(8);
 				sdk::structs::fvector2d head_location_2d = controller->project_world_to_screen(head_location);
-				if (!head_location_2d.is_valid()) continue;
+				sdk::structs::fvector root_location = mesh->get_bone_location(0);
+				sdk::structs::fvector2d root_location_2d = controller->project_world_to_screen(root_location);
+				if (!head_location_2d.is_valid() || !root_location_2d.is_valid()) continue;
+
+
 
 				canvas->k2_drawline(head_location_2d, { 1920 / 2, 1080 }, 1, { 1,1,1,1 });
 			}
-		}
+
+		} while (false);
 
 		return draw_transition_o(viewportclient, canvas);
 	}
@@ -73,12 +97,14 @@ namespace valorant
 				if (world) { break; }
 			}
 
+			if (world == nullptr)
+				return;
+			
 			sdk::structs::tarray<sdk::ulocalplayer*> localplayers_array = world->gameinstance()->localplayers();
 			sdk::ulocalplayer* localplayer = localplayers_array[0];
 			sdk::ugameviewportclient* viewportclient = localplayer->viewportclient();
 
-			vmtshadow hook(viewportclient);
-			draw_transition_o = (draw_transition)hook.apply(0x68, reinterpret_cast<std::uintptr_t*>(draw_transition_hook));
+			hook::vmt((void*)viewportclient, draw_transition_hook, 0x69, (void**)&draw_transition_o);
 		}
 	}
 }

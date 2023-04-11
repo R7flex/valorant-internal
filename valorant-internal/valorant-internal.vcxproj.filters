@@ -5,8 +5,8 @@
     <ClCompile Include="sdk.cpp">
       <Filter>valorant</Filter>
     </ClCompile>
-    <ClCompile Include="vmthook.cpp">
-      <Filter>hook</Filter>
+    <ClCompile Include="menu.cpp">
+      <Filter>menu</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -15,6 +15,12 @@
     </Filter>
     <Filter Include="hook">
       <UniqueIdentifier>{dcf8a9ef-8a80-4975-95bc-1073a0614ce4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="menu">
+      <UniqueIdentifier>{74b5a5c3-d8ef-4760-bb37-e317009dde8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="crypt">
+      <UniqueIdentifier>{2b189f7b-7269-416b-95ec-9c55e7b9cb0b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -34,6 +40,15 @@
       <Filter>hook</Filter>
     </ClInclude>
     <ClInclude Include="spoofcall.h" />
+    <ClInclude Include="zerogui.h">
+      <Filter>menu</Filter>
+    </ClInclude>
+    <ClInclude Include="zeroinput.h">
+      <Filter>menu</Filter>
+    </ClInclude>
+    <ClInclude Include="skcrypt.h">
+      <Filter>crypt</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="spoofcall.asm" />

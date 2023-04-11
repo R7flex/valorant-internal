@@ -242,21 +242,52 @@ namespace valorant {
 				}
 			};
 
-			struct fstring : private tarray<wchar_t> {
-				fstring() { };
-				fstring(wchar_t* other) {
-					this->max = this->count = *other ? static_cast<int>(crt::wcslen(other)) + 1 : 0;
-
-					if (this->count)
-						this->data = const_cast<wchar_t*>(other);
+			class fstring : public tarray<wchar_t>
+			{
+			public:
+				inline fstring()
+				{
 				};
 
-				wchar_t* c_str() {
-					return this->data;
+				fstring(const wchar_t* other)
+				{
+					max = count = *other ? static_cast<int>(std::wcslen(other)) + 1 : 0;
+
+					if (count)
+					{
+						data = const_cast<wchar_t*>(other);
+					}
+				};
+				fstring(const wchar_t* other, int count)
+				{
+					data = const_cast<wchar_t*>(other);;
+					max = count = count;
+				};
+
+				inline bool is_valid() const
+				{
+					return data != nullptr;
 				}
 
-				bool valid() {
-					return this->data != nullptr;
+				inline const wchar_t* wide() const
+				{
+					return data;
+				}
+
+				int multi(char* name, int size) const
+				{
+					return WideCharToMultiByte(CP_UTF8, 0, data, count, name, size, nullptr, nullptr) - 1;
+				}
+
+				std::string to_str() const
+				{
+					auto length = std::wcslen(data);
+
+					std::string str(length, '\0');
+
+					std::use_facet<std::ctype<wchar_t>>(std::locale()).narrow(data, data + length, '?', &str[0]);
+
+					return str;
 				}
 			};
 			enum class earesalliance : uint8_t {
