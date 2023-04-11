@@ -301,3 +301,110 @@ uengine* ugameinstance::get_uengine()
 {
 	return memory::read<uengine*>(std::uintptr_t(this) + 0x28);
 }
+
+float math::distance_2d(structs::fvector2d v1, structs::fvector2d v2)
+{
+	uobject* function = uobject::find_object<uobject*>(L"Engine.KismetMathLibrary.Distance2D");
+	if (!function)
+		return 0;
+
+	struct
+	{
+		structs::fvector2d v1;
+		structs::fvector2d v2;
+		float output;
+	} params;
+
+	params.v1 = v1;
+	params.v2 = v2;
+
+	variables::math_system->process_event(function, &params);
+
+	return params.output;
+}
+
+structs::fvector math::find_look_at_rotation(structs::fvector start, structs::fvector end)
+{
+	uobject* function = uobject::find_object<uobject*>(L"Engine.KismetMathLibrary.FindLookAtRotation");
+	if (!function)
+		return 0;
+
+	struct
+	{
+		structs::fvector start;
+		structs::fvector end;
+		structs::fvector output;
+	} params;
+
+	params.start = start;
+	params.end = end;
+
+	variables::math_system->process_event(function, &params);
+
+	return params.output;
+}
+
+structs::fvector aplayercameramanager::get_camera_location()
+{
+	uobject* function = uobject::find_object<uobject*>(L"Engine.PlayerCameraManager.GetCameraLocation");
+	if (!function)
+		return 0;
+
+	struct
+	{
+		structs::fvector output;
+	} params;
+
+	this->process_event(function, &params);
+
+	return params.output;
+}
+
+void aplayercontroller::set_control_rotation(structs::fvector angle)
+{
+	uobject* function = uobject::find_object<uobject*>(L"Engine.Controller.SetControlRotation");
+	if (!function)
+		return;
+
+	struct
+	{
+		structs::fvector angle;
+	} params;
+
+	params.angle = angle;
+
+	this->process_event(function, &params);
+}
+
+uinventory* ashootercharacter::get_inventory()
+{
+	uobject* function = uobject::find_object<uobject*>(L"ShooterGame.ShooterCharacter.GetInventory");
+	if (!function)
+		return 0;
+
+	struct
+	{
+		uinventory* output;
+	} params;
+
+	this->process_event(function, &params);
+
+	return params.output;
+}
+
+
+currentequippable* uinventory::get_current_equippable()
+{
+	uobject* function = uobject::find_object<uobject*>(L"ShooterGame.AresInventory.GetCurrentEquippable");
+	if (!function)
+		return 0;
+
+	struct
+	{
+		currentequippable* output;
+	} params;
+
+	this->process_event(function, &params);
+
+	return params.output;
+}

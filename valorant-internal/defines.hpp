@@ -22,10 +22,17 @@ namespace offsets
 	constexpr std::uintptr_t world = 0x80;
 }
 
+namespace globals
+{
+	inline bool box;
+	inline bool aimbot;
+	inline int aimkey = VK_RBUTTON;
+}
+
 namespace memory
 {
 	template <typename T>
-	T read(std::uintptr_t addr)
+	inline T read(std::uintptr_t addr)
 	{
 		T buffer;
 		ReadProcessMemory(GetCurrentProcess(), (LPCVOID)addr, &buffer, sizeof(T), 0);
@@ -42,5 +49,26 @@ namespace crt
 		for (; *str != '\0'; ++str)
 			++counter;
 		return counter;
+	}
+	__forceinline bool contains(std::string firstString, std::string secondString) {
+		if (secondString.size() > firstString.size())
+			return false;
+
+		for (int i = 0; i < firstString.size(); i++) {
+			int j = 0;
+			// If the first characters match
+			if (firstString[i] == secondString[j]) {
+				int k = i;
+				while (firstString[i] == secondString[j] && j < secondString.size()) {
+					j++;
+					i++;
+				}
+				if (j == secondString.size())
+					return true;
+				else // Re-initialize i to its original value
+					i = k;
+			}
+		}
+		return false;
 	}
 }

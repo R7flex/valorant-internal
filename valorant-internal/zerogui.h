@@ -1,5 +1,6 @@
 #include "zeroinput.h"
 #include "sdk.hpp"
+#include "skcrypt.h"
 
 wchar_t* s2wc(const char* c)
 {
@@ -189,7 +190,7 @@ namespace menu
 		}
 	}
 
-	void SameLine()
+	void sameline()
 	{
 		sameLine = true;
 	}
@@ -214,12 +215,12 @@ namespace menu
 	void TextLeft(char* name, valorant::sdk::structs::fvector2d pos, valorant::sdk::structs::flinearcolor color, bool outline)
 	{
 		int length = strlen(name) + 1;
-		canvas->k2_drawtext(font, valorant::sdk::structs::fstring{ s2wc(name), length }, pos, valorant::sdk::structs::fvector2d{ 0.97f, 0.97f }, color, false, colors::Text_Shadow, valorant::sdk::structs::fvector2d{ pos.x + 1, pos.y + 1 }, false, true, true, colors::Text_Outline);
+		canvas->k2_drawtext(font, valorant::sdk::structs::fstring{ s2wc(name) }, pos, valorant::sdk::structs::fvector2d{ 0.97f, 0.97f }, color, false, colors::Text_Shadow, valorant::sdk::structs::fvector2d{ pos.x + 1, pos.y + 1 }, false, true, true, colors::Text_Outline);
 	}
 	void TextCenter(char* name, valorant::sdk::structs::fvector2d pos, valorant::sdk::structs::flinearcolor color, bool outline)
 	{
 		int length = strlen(name) + 1;
-		canvas->k2_drawtext(font, valorant::sdk::structs::fstring{ s2wc(name), length }, pos, valorant::sdk::structs::fvector2d{ 0.97f, 0.97f }, color, false, colors::Text_Shadow, valorant::sdk::structs::fvector2d{ pos.x + 1, pos.y + 1 }, true, true, true, colors::Text_Outline);
+		canvas->k2_drawtext(font, valorant::sdk::structs::fstring{ s2wc(name) }, pos, valorant::sdk::structs::fvector2d{ 0.97f, 0.97f }, color, false, colors::Text_Shadow, valorant::sdk::structs::fvector2d{ pos.x + 1, pos.y + 1 }, true, true, true, colors::Text_Outline);
 	}
 
 	void GetColor(valorant::sdk::structs::flinearcolor* color, float* r, float* g, float* b, float* a)
@@ -492,7 +493,7 @@ namespace menu
 		
 		return false;
 	}
-	void Checkbox(char* name, bool* value)
+	void checkbox(char* name, bool* value)
 	{
 		elements_count++;
 		
@@ -624,7 +625,7 @@ namespace menu
 		if (first_element_pos.x == 0.0f)
 			first_element_pos = pos;
 	}
-	void SliderFloat(char* name, float* value, float min, float max, char* format = (char*)"%.0f")
+	void sliderfloat(char* name, float* value, float min, float max, char* format = (char*)"%.0f")
 	{
 		elements_count++;
 
@@ -859,7 +860,7 @@ namespace menu
 		
 		return szName;
 	}
-	void Hotkey(char* name, valorant::sdk::structs::fvector2d size, int* key)
+	void hotkey(char* name, valorant::sdk::structs::fvector2d size, int* key)
 	{
 		elements_count++;
 
@@ -897,7 +898,7 @@ namespace menu
 		{
 			//Text
 			valorant::sdk::structs::fvector2d textPos = valorant::sdk::structs::fvector2d{ pos.x + size.x / 2, pos.y + size.y / 2 };
-			TextCenter((char*)"[Press Key]", textPos, valorant::sdk::structs::flinearcolor{ 1.0f, 1.0f, 1.0f, 1.0f }, false);
+			TextCenter(crypt("[Press Key]"), textPos, valorant::sdk::structs::flinearcolor{ 1.0f, 1.0f, 1.0f, 1.0f }, false);
 
 			if (!menu::input::is_any_mouse_down())
 			{

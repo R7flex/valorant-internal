@@ -49,6 +49,9 @@
     <ClInclude Include="skcrypt.h">
       <Filter>crypt</Filter>
     </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>valorant</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="spoofcall.asm" />

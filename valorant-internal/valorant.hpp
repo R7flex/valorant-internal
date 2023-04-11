@@ -1,7 +1,5 @@
-#include "sdk.hpp"
+#include "utils.h"
 #include "vmthook.h"
-
-using namespace valorant;
 
 namespace menu
 {
@@ -18,6 +16,9 @@ namespace valorant
 		if (!canvas)
 			return draw_transition_hook(viewportclient, canvas);
 
+		int target_id = 1337;
+		float closest_distance = FLT_MAX;
+
 		do
 		{
 			sdk::uworld* world = reinterpret_cast<sdk::uworld*>( viewportclient->get_world() );
@@ -31,6 +32,8 @@ namespace valorant
 
 			sdk::aplayercontroller* controller = sdk::blueprints::get_player_controller(world);
 			if (!controller) continue;
+
+			sdk::acknowledgedpawn* pawn = controller->get_acknowledged_pawn();
 
 			sdk::ashootercharacter* character = controller->get_shooter_character();
 			if (!character) continue;
@@ -57,9 +60,29 @@ namespace valorant
 				sdk::structs::fvector2d root_location_2d = controller->project_world_to_screen(root_location);
 				if (!head_location_2d.is_valid() || !root_location_2d.is_valid()) continue;
 
+				if (globals::box)
+					utils::box_3d(sdk::structs::fvector(root_location.x, root_location.y, root_location.z + 100), sdk::structs::fvector(124, 124, 208), canvas, controller);
 
+				float screen_distance = sdk::math::distance_2d(head_location_2d, {1920 / 2, 1080 / 2});
+				if (screen_distance < closest_distance) {
+					target_id = idx;
+					closest_distance = screen_distance;
+				}
+			}
 
-				canvas->k2_drawline(head_location_2d, { 1920 / 2, 1080 }, 1, { 1,1,1,1 });
+			if (target_id != 1337 && GetAsyncKeyState(globals::aimkey))
+			{
+				sdk::ashootercharacter* actor = actors[target_id];
+				if (!actor || actor == character) continue;
+				sdk::uskeletalmeshcomponent* mesh = actor->get_mesh();
+				if (!mesh) continue;
+
+				if (actor->is_alive())
+				{
+					sdk::structs::fvector camera_location = camera->get_camera_location();
+					sdk::structs::fvector aim_rotation = sdk::math::find_look_at_rotation(camera_location, mesh->get_bone_location(8));
+					controller->set_control_rotation(aim_rotation);
+				}
 			}
 
 		} while (false);
@@ -76,6 +99,7 @@ namespace valorant
 			variables::blueprints = sdk::uobject::find_object<sdk::uobject*>(L"ShooterGame.Default__ShooterBlueprintLibrary");
 			variables::gameplay_statics = sdk::uobject::find_object<sdk::uobject*>(L"Engine.Default__GameplayStatics");
 			variables::kismet_system = sdk::uobject::find_object<sdk::uobject*>(L"Engine.Default__KismetSystemLibrary");
+			variables::math_system = sdk::uobject::find_object<sdk::uobject*>(L"Engine.Default__KismetMathLibrary");
 
 			sdk::uworld* world = 0;
 			const wchar_t* uworld_names[] = {

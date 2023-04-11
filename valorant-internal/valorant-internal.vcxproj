@@ -29,6 +29,7 @@
     <ClInclude Include="skcrypt.h" />
     <ClInclude Include="spoofcall.h" />
     <ClInclude Include="structs.hpp" />
+    <ClInclude Include="utils.h" />
     <ClInclude Include="valorant.hpp" />
     <ClInclude Include="vmthook.h" />
     <ClInclude Include="zerogui.h" />
